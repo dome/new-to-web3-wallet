@@ -16,7 +16,8 @@ import {
   base,
   baseGoerli,
   bsc,
-  bscTestnet
+  bscTestnet,
+  jbc
 } from 'wagmi/chains'
 import { connectorsForWallets } from '@rainbow-me/rainbowkit'
 import {
@@ -30,17 +31,17 @@ import {
   walletConnectWallet
 } from '@rainbow-me/rainbowkit/wallets'
 
-const ProjectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
+const ProjectId = '1'
 
 if (!ProjectId) {
-  throw new Error('WalletConnect project ID is not defined. Please check your environment variables.')
+  // throw new Error('WalletConnect project ID is not defined. Please check your environment variables.')
 }
 
 const Connectors = connectorsForWallets(
   [
     {
       groupName: 'Recommended',
-      wallets: [metaMaskWallet, rainbowWallet, walletConnectWallet, ledgerWallet, rabbyWallet, coinbaseWallet, argentWallet, safeWallet]
+      wallets: [metaMaskWallet, rainbowWallet, ledgerWallet, rabbyWallet, coinbaseWallet, argentWallet, safeWallet]
     }
   ],
   { appName: 'New-To-Web3-Wallet', projectId: ProjectId }
@@ -51,8 +52,29 @@ const customZkSyncSepoliaTestnet = { ...zkSyncSepoliaTestnet, iconUrl: '/assets/
 const customLinea = { ...linea, iconUrl: '/assets/chains/linea.svg' }
 const customLineaTestnet = { ...lineaTestnet, iconUrl: '/assets/chains/linea.svg' }
 
+const lavarock: Chain = {
+  id: 8899001,
+  name: 'Lavarock Chain',
+  network: 'lavarock',
+  testnet: false,
+  nativeCurrency: {
+    name: 'LAVA',
+    symbol: 'LVR',
+    decimals: 18
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://rpc.lavarock.xyz']
+    },
+    public: {
+      http: ['https://rpc.lavarock.xyz']
+    }
+  },
+  iconUrl: 'https://exp.lavarock.xyz/assets/configs/network_icon.png'
+}
 export const Transports: Record<number, Transport> = {
   [mainnet.id]: http(),
+  [lavarock.id]: http(),
   [sepolia.id]: http(),
   [polygon.id]: http(),
   [polygonMumbai.id]: http(),
@@ -67,12 +89,13 @@ export const Transports: Record<number, Transport> = {
   [base.id]: http(),
   [baseGoerli.id]: http(),
   [bsc.id]: http(),
-  [bscTestnet.id]: http()
+  [bscTestnet.id]: http(),
+  [jbc.id]: http()
 }
-
 export const WagmiConfig = createConfig({
   chains: [
     mainnet,
+    lavarock,
     sepolia,
     polygon,
     polygonMumbai,
@@ -87,7 +110,7 @@ export const WagmiConfig = createConfig({
     base,
     baseGoerli,
     bsc,
-    bscTestnet
+    jbc
   ],
   connectors: Connectors,
   transports: Transports,
